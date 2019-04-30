@@ -1,25 +1,13 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 
-[RequireComponent(typeof(Collider2D))]
 public class Selectable : MonoBehaviour
 {
-    SelectionManager manager;
-    protected bool selected;
+    [HideInInspector]
+    public bool selected;
 
-    void Start()
+    public virtual void OnSelect()
     {
-        manager = SelectionManager.instance;
-    }
-
-    void OnMouseDown()
-    {
-        OnSelect();
-        manager.OnSelect(this);
-    }
-
-    protected virtual void OnSelect()
-    {
+        Debug.Log("Selectable::OnSelect::");
         selected = true;
     }
     public virtual void OnDeselect()
