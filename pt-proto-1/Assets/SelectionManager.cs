@@ -2,10 +2,8 @@
 
 public class SelectionManager : MonoBehaviour
 {
-    public static SelectionManager instance = null;
-    Selectable selected;
-    //public SelectionMarker marker;
-
+    public static SelectionManager instance = null;    
+    CharacterController selected;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -24,29 +22,46 @@ public class SelectionManager : MonoBehaviour
 
         //Sets this to not be destroyed when reloading scene
         DontDestroyOnLoad(gameObject);
-
-        //marker.enabled = false;
     }
-
 
     void Update()
     {
-        if (selected != null)
+        if (Input.GetMouseButtonDown(0))
         {
-            //if (!marker.enabled) marker.enabled = true;
-            Vector3 screenPos = Camera.main.WorldToScreenPoint(selected.transform.position);
-            // add a tiny bit of height?
-            screenPos.y += 5f; // adjust as you see fit.
-            //marker.transform.position = screenPos;
+            CheckForDeselect();
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Move();
         }
     }
 
-    public void OnSelect(Selectable selected)
+    void Move()
+    {   
+        var screenToWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        selected.Move(new Vector2(screenToWorldPoint.x, screenToWorldPoint.y));
+    }
+
+    void CheckForDeselect()
     {
-        if(this.selected != null && selected != this.selected)
+        if (selected != null)
         {
-            this.selected.OnDeselect();
-            //marker.enabled = false;
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+            if (!hit)
+            {
+                this.selected.Deselect();
+                this.selected = null;
+            }
+        }
+    }
+
+    public void OnSelect(CharacterController selected)
+    {
+        if (this.selected != null && selected != this.selected)
+        {
+            this.selected.Deselect();
         }
 
         this.selected = selected;
