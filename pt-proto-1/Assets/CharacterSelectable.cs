@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(CharacterCanvasController))]
 public class CharacterSelectable : Selectable
 {
-    private Canvas indicatorCanvas;
+    private CharacterCanvasController indicatorCanvas;
     
     void Awake()
     {
-        indicatorCanvas = GetComponentInChildren<Canvas>();
-        indicatorCanvas.enabled = false;
+        indicatorCanvas = GetComponentInChildren<CharacterCanvasController>();
     }
     
     public override void OnSelect()

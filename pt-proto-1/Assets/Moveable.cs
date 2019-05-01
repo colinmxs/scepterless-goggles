@@ -7,6 +7,7 @@ public class Moveable : MonoBehaviour
     Transform _transform;
     Vector3 destination;
     float speed;
+    GameObject wayPoint;
 
     void Start()
     {
