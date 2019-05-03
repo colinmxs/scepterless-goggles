@@ -12,14 +12,16 @@ public class CharacterSelectable : Selectable
     
     public override void OnSelect()
     {
-        Debug.Log("CharacterSelectable::OnSelect::");
-        base.OnSelect();
-        indicatorCanvas.enabled = true;
+        if (!selected)
+        {
+            base.OnSelect();
+            indicatorCanvas.ToggleSelectionMarker();
+        }        
     }
 
     public override void OnDeselect()
     {
         base.OnDeselect();
-        indicatorCanvas.enabled = false;
+        indicatorCanvas.ToggleSelectionMarker();
     }
 }
