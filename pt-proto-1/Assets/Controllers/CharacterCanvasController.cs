@@ -3,16 +3,15 @@ using UnityEngine.UI;
 
 public class CharacterCanvasController : MonoBehaviour
 {
-    public Image dingy;
-    // Start is called before the first frame update
+    public Image selectionMarker;
+
     void Start()
     {
-        
+        selectionMarker.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ToggleSelectionMarker()
     {
-        
+        selectionMarker.enabled = selectionMarker.enabled ? false : true;
     }
 }
