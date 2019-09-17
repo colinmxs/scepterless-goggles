@@ -19,29 +19,17 @@ public class PlayerController : MonoBehaviour
     private int jumpGraceTime;
     private int jumpGraceCountdown;
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Set initial values
         smoothing = 0.05f;
         moveVector = Vector3.zero;
         movement = 0f;
         doJump = false;
         jumpGraceTime = 5;
-
-        // Get and assign rigidbody
         rb = gameObject.GetComponent<Rigidbody2D>();
     }
-
-    // Update is called once per frame
-    void Update()
+    private void HandleMovement()
     {
-        // ================ //
-        // === MOVEMENT === //
-        // ================ //
-
-        // Store player input axis
-        var lastAxisHorizontal = axisHorizontal;
         axisHorizontal = Input.GetAxisRaw("Horizontal") * moveSpeed;
 
         if (axisHorizontal != 0.0)
@@ -52,12 +40,9 @@ public class PlayerController : MonoBehaviour
             // Smoothing out movevent before applying
             rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref moveVector, smoothing);
         }
-
-        // ====================== //
-        // === GROUND CONTROL === //
-        // ====================== //
-
-        // Set raycast layer mask
+    }
+    private void CheckForGround()
+    {
         int layerMask = LayerMask.GetMask("Solid");
 
         // Ground Ray 1
@@ -97,12 +82,9 @@ public class PlayerController : MonoBehaviour
             // Not rounded
             isGrounded = false;
         }
-
-        // =============== //
-        // === JUMPING === //
-        // =============== //
-
-        // Is not grounded
+    }
+    private void HandleJump()
+    {
         if (isGrounded == false)
         {
             // Count down grace period
@@ -133,6 +115,12 @@ public class PlayerController : MonoBehaviour
             // Increase downward gravity by fall multiplier
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
+    }
+    void Update()
+    {
+        HandleMovement();
+        CheckForGround();
+        HandleJump();
     }
 
     // Used for physics calculations
