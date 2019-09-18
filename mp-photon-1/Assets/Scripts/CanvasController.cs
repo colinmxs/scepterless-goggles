@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class CanvasController : MonoBehaviour
 {
-    GameObject myScore;
+    Text myText;
+    int score = 0;
 
     void Start()
     {
@@ -14,18 +15,27 @@ public class CanvasController : MonoBehaviour
         gameObject.AddComponent<GraphicRaycaster>();
 
         // Text
-        myScore = new GameObject();
+        var myScore = new GameObject();
         myScore.transform.parent = gameObject.transform;
-        myScore.name = "My Score";
+        myScore.name = "Score";
 
-        var text = myScore.AddComponent<Text>();
-        text.font = Font.CreateDynamicFontFromOSFont("Arial", 100);
-        text.text = "wobble";
-        text.fontSize = 100;
+        myText = myScore.AddComponent<Text>();
+        myText.font = Font.CreateDynamicFontFromOSFont("Arial", 100);
+        myText.text = "Score: " + score;
+        myText.fontSize = 100;
 
         // Text position
-        var rectTransform = text.GetComponent<RectTransform>();
+        var rectTransform = myText.GetComponent<RectTransform>();
         rectTransform.localPosition = new Vector3(0, 0, 0);
-        rectTransform.sizeDelta = new Vector2(400, 200);
+        rectTransform.sizeDelta = new Vector2(450, 200);
+    }    
+    public void IncrementScore()
+    {
+        score += 1;
+        myText.text = "Score: " + score;
+    }
+    public void DisplayWinMessage()
+    {
+        myText.text = "You WIN MOTHERFUCKER";
     }
 }
