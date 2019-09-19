@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Launcher))]
 public class BallSpawner : MonoBehaviour
 {
     public int BallCount;
-    public int SecondsBetweenSpawn;
+    public float SecondsBetweenSpawn;
     public GameObject BallPrefab;
 
     private GameObject[] balls;
@@ -22,6 +23,10 @@ public class BallSpawner : MonoBehaviour
             ball.SetActive(false);
             balls[i] = ball;
         }
+    }
+
+    void Start()
+    {
 
     }
 
@@ -41,5 +46,10 @@ public class BallSpawner : MonoBehaviour
             BallsSpawned = BallsSpawned + 1;
             yield return new WaitForSeconds(SecondsBetweenSpawn);
         }
+    }
+
+    internal void Initialize(PlayerController[] players)
+    {
+        throw new NotImplementedException();
     }
 }
