@@ -7,6 +7,7 @@ public class BallSpawner : MonoBehaviour
     public int BallCount;
     public float SecondsBetweenSpawn;
     public GameObject BallPrefab;
+    public GameObject PlayerBallPrefab;
 
     private GameObject[] balls;
     private Launcher launcher;
@@ -28,7 +29,10 @@ public class BallSpawner : MonoBehaviour
     {
 
     }
-
+    public void SpawnPlayerBalls()
+    {
+        
+    }
     public void Go()
     {
         StartCoroutine(SpawnBalls());
@@ -45,5 +49,10 @@ public class BallSpawner : MonoBehaviour
             BallsSpawned = BallsSpawned + 1;
             yield return new WaitForSeconds(SecondsBetweenSpawn);
         }
+    }
+
+    IEnumerator SpawnPlayerBalls()
+    {
+        
     }
 }

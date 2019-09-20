@@ -95,8 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c469bf82fc74f634899f2648ece0bfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BallCount: 1000
-  SecondsBetweenSpawn: 0.01
+  BallCount: 500
+  SecondsBetweenSpawn: 0.5
   BallPrefab: {fileID: 5720207687223376753, guid: 0a2908b7673c82e4da083ce9d068500a,
     type: 3}
 --- !u!114 &7777221008925763491
