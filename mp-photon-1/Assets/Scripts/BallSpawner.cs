@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Launcher))]
@@ -46,10 +45,5 @@ public class BallSpawner : MonoBehaviour
             BallsSpawned = BallsSpawned + 1;
             yield return new WaitForSeconds(SecondsBetweenSpawn);
         }
-    }
-
-    internal void Initialize(PlayerController[] players)
-    {
-        throw new NotImplementedException();
     }
 }

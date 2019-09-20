@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5370364102100312607}
   - component: {fileID: 5720207687223376754}
   - component: {fileID: 1374373593656924307}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,9 +113,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.059748515, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.5597485
 --- !u!50 &5720207687223376754
 Rigidbody2D:
   serializedVersion: 4

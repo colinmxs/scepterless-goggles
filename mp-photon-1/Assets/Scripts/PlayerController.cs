@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         doJump = false;
         jumpGraceTime = 5;
         rb = gameObject.GetComponent<Rigidbody2D>();
+        tag = "Player";
     }
     private void HandleMovement()
     {

@@ -3,7 +3,8 @@ using UnityEngine.Events;
 
 public class Ball : MonoBehaviour
 {
-    private GameManager GameManager;
+    private GameManager GameManager;    
+
     void Start()
     {
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
@@ -11,11 +12,11 @@ public class Ball : MonoBehaviour
     }
 
     void OnCollisionEnter2D(Collision2D col)
-    {
-        if(col.gameObject.name == "Player")
+    {        
+        if (col.gameObject.tag == "Player")
         {
             gameObject.SetActive(false);
-            GameManager.UpdateScore();
+            GameManager.UpdateScore(col.gameObject.name);
         }
     }
 }
