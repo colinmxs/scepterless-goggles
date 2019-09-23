@@ -234,10 +234,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BallSpawnerPrefab: {fileID: 7777221008925763503, guid: aa854d636c937f0498a358fd729bee71,
     type: 3}
+  PlayerSpawnerPrefab: {fileID: 5192281929137337808, guid: 3c54f6d9ba9002c46bd29a82cbff5679,
+    type: 3}
   ScoreUIPrefab: {fileID: 4397605309087711316, guid: c3226b7fcb33ea94d815667628a6db89,
     type: 3}
-  PlayerPrefab: {fileID: 1272811031325601269, guid: 8b8f005b8cc858841ba3f57e4630f00d,
-    type: 3}
+  NumberOfBalls: 300
+  SecondsBetweenBallSpawn: 0.1
+  NumberOfPlayers: 2
 --- !u!4 &756519819
 Transform:
   m_ObjectHideFlags: 0

@@ -35,10 +35,7 @@ public class PlayerController : MonoBehaviour
 
         if (axisHorizontal != 0.0)
         {
-            // Move the character by finding the target velocity
             Vector3 targetVelocity = new Vector2(movement * 10f, rb.velocity.y);
-
-            // Smoothing out movevent before applying
             rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref moveVector, smoothing);
         }
     }

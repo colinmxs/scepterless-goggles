@@ -4,42 +4,46 @@ using UnityEngine;
 [RequireComponent(typeof(Launcher))]
 public class BallSpawner : MonoBehaviour
 {
-    public int BallCount;
-    public float SecondsBetweenSpawn;
     public GameObject BallPrefab;
-    public GameObject PlayerBallPrefab;
+    public GameObject[] balls { get; private set; }
 
-    private GameObject[] balls;
+    internal int BallCount;
+    internal float SecondsBetweenSpawn;
+
     private Launcher launcher;
     private int BallsSpawned = 0;
+    bool initialized = false;
 
     void Awake()
     {
-        launcher = GetComponent<Launcher>();
+        launcher = GetComponent<Launcher>();        
+    }
+
+    public void Initialize()
+    {
         balls = new GameObject[BallCount];
         for (int i = 0; i < BallCount; i++)
         {
             var ball = Instantiate(BallPrefab, transform);
+            ball.name = "Ball" + i;
             ball.SetActive(false);
             balls[i] = ball;
         }
+        initialized = true;
     }
 
     void Start()
     {
 
     }
-    public void SpawnPlayerBalls()
-    {
-        
-    }
     public void Go()
     {
+        if (!initialized) Initialize();
         StartCoroutine(SpawnBalls());
     }
 
     IEnumerator SpawnBalls()
-    {
+    {        
         while (BallCount > BallsSpawned)
         {
             var ball = balls[BallsSpawned];
@@ -49,10 +53,5 @@ public class BallSpawner : MonoBehaviour
             BallsSpawned = BallsSpawned + 1;
             yield return new WaitForSeconds(SecondsBetweenSpawn);
         }
-    }
-
-    IEnumerator SpawnPlayerBalls()
-    {
-        
     }
 }
