@@ -7,15 +7,9 @@ public class Launcher : MonoBehaviour
     public int MaxHorizontal;
     public int MaxVertical;
     public int MinVertical;
+    private System.Random random;   
 
-    private System.Random random;
-
-    void Awake()
-    {
-        random = new System.Random();
-    }
-
-    public void LaunchBall(GameObject ball)
+    internal void LaunchBall(GameObject ball)
     {
         var ballRb = ball.GetComponent<Rigidbody2D>();
         var x = random.Next(MinHorizontal, MaxHorizontal);
@@ -24,4 +18,9 @@ public class Launcher : MonoBehaviour
         var moveVector = Vector3.zero;
         ballRb.velocity = Vector3.SmoothDamp(ballRb.velocity, targetVelocity * Force, ref moveVector, 0.05f);
     }
+
+    private void Awake()
+    {
+        random = new System.Random();
+    }   
 }

@@ -43,3 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c2baf2c4116cdf43a871b5422571f11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MidScreenTextPrefab: {fileID: 8405529754903231027, guid: 19e10d775af29184e8581be64333a590,
+    type: 3}
+  InputFieldPrefab: {fileID: 796955235315360171, guid: f10eb1f3150642b4bb2baf9a7b5aa1a7,
+    type: 3}

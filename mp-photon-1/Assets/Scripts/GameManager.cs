@@ -1,95 +1,96 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject BallSpawnerPrefab;
-    public GameObject PlayerSpawnerPrefab;
-    public GameObject ScoreUIPrefab;
-
-    BallSpawner BallSpawner;
-    BallSpawner PlayerSpawner;
-    CanvasController CanvasController;
-    Dictionary<string, int> Scores = new Dictionary<string, int>();
-
     public int NumberOfBalls;
     public float SecondsBetweenBallSpawn;
-    public int NumberOfPlayers;
+    public GameObject PlayerSpawnerPrefab;
+    public GameObject BallSpawnerPrefab;
+    public GameObject ScoreUIPrefab;
+    private BallSpawner ballSpawner;
+    private BallSpawner playerSpawner;
+    private CanvasController canvasController;
+    private Dictionary<string, int> scores = new Dictionary<string, int>();    
+    private int numberOfPlayers;    
 
-    void Awake()
+    private int ScoreToWin => ballSpawner.BallCount / scores.Count;
+
+    internal void UpdateScore(string playerName)
+    {
+        scores[playerName] += 1;
+        canvasController.UpdateScore(playerName, scores[playerName]);
+        if (scores[playerName] == ScoreToWin)
+        {
+            canvasController.DisplayWinMessage(playerName);
+        }
+    }
+
+    private void Awake()
     {
         var transform = this.transform;
-        BallSpawner = Instantiate(BallSpawnerPrefab).GetComponent<BallSpawner>();
-        BallSpawner.name = "Ball Daddy";
-        BallSpawner.transform.parent = transform;
-        BallSpawner.BallCount = NumberOfBalls;
-        BallSpawner.SecondsBetweenSpawn = SecondsBetweenBallSpawn;
-        BallSpawner.Initialize();
+        ballSpawner = Instantiate(BallSpawnerPrefab).GetComponent<BallSpawner>();
+        ballSpawner.name = "Ball Daddy";
+        ballSpawner.transform.parent = transform;
+        ballSpawner.BallCount = NumberOfBalls;
+        ballSpawner.SecondsBetweenSpawn = SecondsBetweenBallSpawn;
+        ballSpawner.Initialize();
 
-        PlayerSpawner = Instantiate(PlayerSpawnerPrefab).GetComponent<BallSpawner>();
-        PlayerSpawner.name = "Player Daddy";
-        PlayerSpawner.transform.parent = transform;
-        PlayerSpawner.BallCount = NumberOfPlayers;
-        PlayerSpawner.SecondsBetweenSpawn = 0;
-        PlayerSpawner.Initialize();
+        playerSpawner = Instantiate(PlayerSpawnerPrefab).GetComponent<BallSpawner>();
+        playerSpawner.name = "Player Daddy";
+        playerSpawner.transform.parent = transform;
+        playerSpawner.SecondsBetweenSpawn = 0;
 
-        CanvasController = Instantiate(ScoreUIPrefab).GetComponent<CanvasController>();
-        CanvasController.transform.parent = transform;
-        CanvasController.name = "HUD";
-
-        InitializeScores();
+        canvasController = Instantiate(ScoreUIPrefab).GetComponent<CanvasController>();
+        canvasController.transform.parent = transform;
+        canvasController.name = "HUD";
     }
-    void InitializeScores()
+
+    private void InitializeScores()
     {
-        foreach (var player in PlayerSpawner.balls)
+        foreach (var player in playerSpawner.Balls)
         {
-            Scores.Add(player.name, 0);
+            scores.Add(player.name, 0);
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        StartCoroutine(PressAnyKeyToStart());        
-    }
-    int ScoreToWin => BallSpawner.BallCount / Scores.Count;
-    public void UpdateScore(string playerName)
-    {
-        Scores[playerName] += 1;
-        CanvasController.UpdateScore(playerName, Scores[playerName]);
-        if(Scores[playerName] == ScoreToWin)
-        {
-            CanvasController.DisplayWinMessage(playerName);
-        }
+        StartCoroutine(PressAnyKeyToStart());
     }
 
-    IEnumerator PressAnyKeyToStart()
+    private IEnumerator PressAnyKeyToStart()
     {
-        CanvasController.PressAnyKeyToStart();
+        canvasController.PressAnyKeyToStart();
         while (!Input.anyKey)
         {
             yield return null;
         }
-        CanvasController.Clear();
 
-        var input = CanvasController.HowManyPlayers();
-        while (!Input.GetKeyDown(KeyCode.Return))
-        {
-            yield return null;
-        }
-        Debug.Log(input.text);
-        CanvasController.Clear();
+        canvasController.Clear();
+        yield return new WaitForSeconds(0.5f);
+
+        ////var input = CanvasController.HowManyPlayers();
+        ////input.Select();
+        ////while (!Input.GetKeyDown(KeyCode.Return) || input.text.Length == 0)
+        ////{
+        ////    yield return null;
+        ////}
+        ////numberOfPlayers = int.Parse(input.text);
+        numberOfPlayers = 1;
+        playerSpawner.BallCount = numberOfPlayers;
+        playerSpawner.Initialize();
+        InitializeScores();
+        canvasController.Clear();
 
         Run();
     }
 
-    void Run()
+    private void Run()
     {
-        CanvasController.InitializeScores(Scores.Keys);
-        PlayerSpawner.Go();
-        BallSpawner.Go();
+        canvasController.InitializeScores(scores.Keys);
+        playerSpawner.Go();
+        ballSpawner.Go();
     }
 }

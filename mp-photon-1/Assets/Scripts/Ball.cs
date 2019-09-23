@@ -1,22 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 
 public class Ball : MonoBehaviour
 {
-    private GameManager GameManager;    
+    private GameManager gameManager;
 
-    void Start()
+    private void Start()
     {
-        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-        GameManager = gameControllerObject.GetComponent<GameManager>();
+        gameManager = GameObject.FindWithTag("GameController").GetComponent<GameManager>();
     }
 
-    void OnCollisionEnter2D(Collision2D col)
-    {        
+    private void OnCollisionEnter2D(Collision2D col)
+    {
         if (col.gameObject.tag == "Player")
         {
             gameObject.SetActive(false);
-            GameManager.UpdateScore(col.gameObject.name);
+            gameManager.UpdateScore(col.gameObject.name);
         }
     }
 }

@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f8695b4c33e6444cbbe62a500e2ee26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundRayLength: 0.05
-  fallMultiplier: 3
-  moveSpeed: 30
-  jumpStrength: 800
+  GroundRayLength: 0.05
+  FallMultiplier: 3
+  MoveSpeed: 30
+  JumpStrength: 800

@@ -5,52 +5,54 @@ using UnityEngine;
 public class BallSpawner : MonoBehaviour
 {
     public GameObject BallPrefab;
-    public GameObject[] balls { get; private set; }
-
-    internal int BallCount;
-    internal float SecondsBetweenSpawn;
-
     private Launcher launcher;
-    private int BallsSpawned = 0;
-    bool initialized = false;
+    private int ballsSpawned = 0;
+    private bool initialized = false;
 
-    void Awake()
-    {
-        launcher = GetComponent<Launcher>();        
-    }
+    public GameObject[] Balls { get; private set; }
 
-    public void Initialize()
+    internal int BallCount { get; set; }
+
+    internal float SecondsBetweenSpawn { get; set; }
+
+    internal void Initialize()
     {
-        balls = new GameObject[BallCount];
+        Balls = new GameObject[BallCount];
         for (int i = 0; i < BallCount; i++)
         {
-            var ball = Instantiate(BallPrefab, transform);
+            GameObject ball = Instantiate(BallPrefab, transform);
             ball.name = "Ball" + i;
             ball.SetActive(false);
-            balls[i] = ball;
+            Balls[i] = ball;
         }
+
         initialized = true;
     }
 
-    void Start()
+    internal void Go()
     {
+        if (!initialized)
+        {
+            Initialize();
+        }
 
-    }
-    public void Go()
-    {
-        if (!initialized) Initialize();
         StartCoroutine(SpawnBalls());
     }
 
-    IEnumerator SpawnBalls()
-    {        
-        while (BallCount > BallsSpawned)
+    private void Awake()
+    {
+        launcher = GetComponent<Launcher>();
+    }
+
+    private IEnumerator SpawnBalls()
+    {
+        while (BallCount > ballsSpawned)
         {
-            var ball = balls[BallsSpawned];
+            GameObject ball = Balls[ballsSpawned];
             ball.SetActive(true);
             ball.transform.position = transform.position;
             launcher.LaunchBall(ball);
-            BallsSpawned = BallsSpawned + 1;
+            ballsSpawned = ballsSpawned + 1;
             yield return new WaitForSeconds(SecondsBetweenSpawn);
         }
     }
