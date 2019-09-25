@@ -970,7 +970,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Create Room
+  m_Text: 'Create/Join Room
 
 '
 --- !u!222 &584080221
@@ -1805,6 +1805,7 @@ GameObject:
   - component: {fileID: 2003989988}
   - component: {fileID: 2003989990}
   - component: {fileID: 2003989989}
+  - component: {fileID: 2003989991}
   m_Layer: 5
   m_Name: CreateRoomPanel
   m_TagString: Untagged
@@ -1869,6 +1870,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003989987}
   m_CullTransparentMesh: 0
+--- !u!114 &2003989991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003989987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090768f926719b1408ccb809f842c2d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CreateRoomButton: {fileID: 1749661556}
+  CreateRoomInput: {fileID: 1814678581}
 --- !u!1 &2145284423
 GameObject:
   m_ObjectHideFlags: 0

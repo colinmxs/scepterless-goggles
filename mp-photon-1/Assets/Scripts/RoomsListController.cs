@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.Button;
 
 public class RoomsListController : MonoBehaviour
 {
@@ -49,7 +48,7 @@ public class RoomsListController : MonoBehaviour
             {
                 var roomButton = RoomButtons[i];
                 roomButton.interactable = true;
-                roomButton.onClick += JoinRoom;
+                roomButton.onClick.AddListener(() => RealtimeClientStarter.Instance.Client.OpJoinRoom(new EnterRoomParams { RoomName = room.Key }));
                 var text = roomButton.GetComponentInChildren<Text>();
                 text.text = room.Value.Name;
                 i++;
@@ -58,11 +57,7 @@ public class RoomsListController : MonoBehaviour
         updateNeeded = false;
     }
 
-    private ButtonClickedEvent JoinRoom()
-    {
-
-    }
-
+    
     private void UpdateRoomsList()
     {
         Debug.Log("UpdateRoomsList()");
