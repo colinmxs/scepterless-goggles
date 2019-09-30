@@ -1,27 +1,42 @@
-﻿using System;
-using System.Collections;    
-using Photon;
-using global::Photon.Realtime;
+﻿using System.Collections;    
 using ExitGames.Client.Photon;
+using global::Photon.Realtime;
 
 public class RealtimePlayer : Player
 {
-    public float xPosition;
-    public float yPosition;
-    public static bool isSendReliable;
+    public static bool IsSendReliable;
+    public float XPosition;
+    public float YPosition;
 
-    public enum EventKey : byte { PlayerPositionX = 0, PlayerPositionY = 1, PlayerName = 2 }
-
-    public enum EventCode : byte { PlayerInfo = 0, PlayerMove = 1 }
-        
     public RealtimePlayer(string nickName, int actorNr, bool isLocal) : base(nickName, actorNr, isLocal)
     {
         // actorNumbers in-game start with 1. any local creation of players gets randomized here
         if (actorNr < 1)
         {
-            this.xPosition = default;
-            this.yPosition = default;
+            this.XPosition = default;
+            this.YPosition = default;
         }
+    }
+
+    public enum EventKey : byte
+    {
+        PlayerPositionX = 0,
+        PlayerPositionY = 1,
+        PlayerName = 2,
+        PlayerReady = 3
+    }
+
+    public enum EventCode : byte
+    {
+        PlayerInfo = 0,
+        PlayerMove = 1
+    }
+
+    public bool PlayerReady { get; private set; }
+    
+    public override string ToString()
+    {
+        return this.ActorNumber + "'" + this.NickName + "':" + this.XPosition + ":" + this.YPosition + " PlayerProps: " + SupportClass.DictionaryToString(this.CustomProperties);
     }
 
     internal void SendPlayerInfo(LoadBalancingPeer peer)
@@ -32,12 +47,13 @@ public class RealtimePlayer : Player
         }
 
         // Setting up the content of the event. Here we want to send a player's info: nickName and color.
-        Hashtable evInfo = new Hashtable();
-        evInfo.Add((byte)EventKey.PlayerName, this.NickName);
+        Hashtable eventInfo = new Hashtable();
+        eventInfo.Add((byte)EventKey.PlayerName, this.NickName);
+        eventInfo.Add((byte)EventKey.PlayerReady, this.PlayerReady);
 
         // The event's code must be of type byte, so we have to cast it. We do this above as well, to get routine ;)
-        peer.OpRaiseEvent((byte)EventCode.PlayerInfo, evInfo, null, SendOptions.SendReliable);
-    }    
+        peer.OpRaiseEvent((byte)EventCode.PlayerInfo, eventInfo, null, SendOptions.SendReliable);
+    }
 
     internal void SendPlayerLocation(LoadBalancingPeer peer)
     {
@@ -47,25 +63,26 @@ public class RealtimePlayer : Player
         }
 
         Hashtable eventContent = new Hashtable();
-        eventContent.Add((byte)EventKey.PlayerPositionX, (byte)this.xPosition);
-        eventContent.Add((byte)EventKey.PlayerPositionY, (byte)this.yPosition);
+        eventContent.Add((byte)EventKey.PlayerPositionX, (byte)this.XPosition);
+        eventContent.Add((byte)EventKey.PlayerPositionY, (byte)this.YPosition);
 
-        peer.OpRaiseEvent((byte)EventCode.PlayerMove, eventContent, new RaiseEventOptions {Receivers = ReceiverGroup.All}, new SendOptions() { DeliveryMode = DeliveryMode.UnreliableUnsequenced });
+        peer.OpRaiseEvent((byte)EventCode.PlayerMove, eventContent, new RaiseEventOptions { Receivers = ReceiverGroup.All }, new SendOptions() { DeliveryMode = DeliveryMode.UnreliableUnsequenced });
     }
-
+    
     internal void SetInfo(Hashtable customEventContent)
     {
         this.NickName = (string)customEventContent[(byte)EventKey.PlayerName];
+        this.PlayerReady = (bool)customEventContent[(byte)EventKey.PlayerReady];
     }
 
-    internal void SetPosition(Hashtable evData)
+    internal void SetPosition(Hashtable eventData)
     {
-        this.xPosition = (byte)evData[(byte)EventKey.PlayerPositionX];
-        this.yPosition = (byte)evData[(byte)EventKey.PlayerPositionY];
+        this.XPosition = (byte)eventData[(byte)EventKey.PlayerPositionX];
+        this.YPosition = (byte)eventData[(byte)EventKey.PlayerPositionY];
     }
 
-    public override string ToString()
+    internal void ToggleReady()
     {
-        return this.ActorNumber + "'" + this.NickName + "':" + this.xPosition + ":" + this.yPosition + " PlayerProps: " + SupportClass.DictionaryToString(this.CustomProperties);
+        PlayerReady = !PlayerReady;
     }
 }

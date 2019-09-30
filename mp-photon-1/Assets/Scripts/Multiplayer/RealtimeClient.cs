@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Threading;
-using global::Photon.Realtime;
 using System.Collections.Generic;
+using System.Threading;
 using ExitGames.Client.Photon;
+using global::Photon.Realtime;
 
 public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyCallbacks, IInRoomCallbacks, IMatchmakingCallbacks
 {
@@ -13,29 +13,21 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
     internal int LastSend = Environment.TickCount;
     internal int MoveInterval = 0;                    
     internal int LastMove = Environment.TickCount;
-    private int UIUpdateInterval = 1000;
     internal int LastUIUpdate = Environment.TickCount;
-    private readonly Thread UpdateThread;
-
-    public Action OnUpdate { get; set; }
-
-    public Action OnCachedRoomListUpdate { get; set; }
-
-    public int ReceivedCountMeEvents { get; set; }
-
-    public Dictionary<string, RoomInfo> CachedRoomList { get; set; }
+    private readonly int uiUpdateInterval = 1000;
+    private readonly Thread updateThread;
 
     public RealtimeClient(bool createGameLoopThread) : base(ConnectionProtocol.Udp)
     {
         CachedRoomList = new Dictionary<string, RoomInfo>();
 
-        //this.loadBalancingPeer.DebugOut = DebugLevel.INFO;
-        //this.loadBalancingPeer.TrafficStatsEnabled = true;
+        // this.loadBalancingPeer.DebugOut = DebugLevel.INFO;
+        // this.loadBalancingPeer.TrafficStatsEnabled = true;
         if (createGameLoopThread)
         {
-            this.UpdateThread = new Thread(this.UpdateLoop);
-            this.UpdateThread.IsBackground = true;
-            this.UpdateThread.Start();
+            this.updateThread = new Thread(this.UpdateLoop);
+            this.updateThread.IsBackground = true;
+            this.updateThread.Start();
         }
 
         this.NickName = "Player_" + (SupportClass.ThreadSafeRandom.Next() % 1000);
@@ -56,11 +48,18 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
         {
             couldConnect = this.ConnectToRegionMaster("usw");
         }
+
         if (!couldConnect)
         {
             this.DebugReturn(DebugLevel.ERROR, "Can't connect to: " + this.CurrentServerAddress);
         }
     }
+
+    public Action OnUpdate { get; set; }
+
+    public int ReceivedCountMeEvents { get; set; }
+
+    public Dictionary<string, RoomInfo> CachedRoomList { get; set; }
 
     public override void OnStatusChanged(StatusCode statusCode)
     {
@@ -131,95 +130,12 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
         }
     }
 
-    protected override Player CreatePlayer(string actorName, int actorNumber, bool isLocal, Hashtable actorProperties)
+    public void ToggleReady()
     {
-        RealtimePlayer tmpPlayer = null;
-        if (this.CurrentRoom != null)
-        {
-            tmpPlayer = (RealtimePlayer)this.CurrentRoom.GetPlayer(actorNumber);
-        }
-
-        if (tmpPlayer == null)
-        {
-            tmpPlayer = new RealtimePlayer(actorName, actorNumber, isLocal);
-            tmpPlayer.InternalCacheProperties(actorProperties);
-
-            if (this.CurrentRoom != null)
-            {
-                this.CurrentRoom.StorePlayer(tmpPlayer);
-            }
-        }
-        else
-        {
-            this.DebugReturn(DebugLevel.ERROR, "Player already listed: " + actorNumber);
-        }
-
-        return tmpPlayer;
-    }
-
-    private void SendPosition()
-    {
-        // dont move if player does not have a number or peer is not connected
-        if (this.LocalPlayer == null || this.LocalPlayer.ActorNumber == 0)
-        {
-            return;
-        }
-
-        ((RealtimePlayer)this.LocalPlayer).SendPlayerLocation(this.LoadBalancingPeer);
-    }
-
-    private void SendPlayerInfo()
-    {
-        if (this.LocalPlayer == null || this.LocalPlayer.ActorNumber == 0)
-        {
-            return;
-        }
-
-        ((RealtimePlayer)this.LocalPlayer).SendPlayerInfo(this.LoadBalancingPeer);
-    }
-	
-    private void UpdateLoop()
-    {
-        while (true)
-        {
-            this.Update();
-            Thread.Sleep(10);
-        }
-    }
-
-    private void Update()
-    {
-        if (Environment.TickCount - this.LastDispatch > this.DispatchInterval)
-        {
-            this.LastDispatch = Environment.TickCount;
-            this.LoadBalancingPeer.DispatchIncomingCommands();
-        }
-
-        if (Environment.TickCount - this.LastSend > this.SendInterval)
-        {
-            this.LastSend = Environment.TickCount;
-            this.LoadBalancingPeer.SendOutgoingCommands(); // will send pending, outgoing commands
-        }
-
-        if (this.MoveInterval != 0 && Environment.TickCount - this.LastMove > this.MoveInterval)
-        {
-            this.LastMove = Environment.TickCount;
-            if (this.State == ClientState.Joined)
-            {
-                this.SendPosition();
-            }
-        }
-
-        // Update call for windows phone UI-Thread
-        if (Environment.TickCount - this.LastUIUpdate > this.UIUpdateInterval)
-        {
-            this.LastUIUpdate = Environment.TickCount;
-            if (this.OnUpdate != null)
-            {
-                this.OnUpdate();
-            }
-        }
-    }
+        var player = (RealtimePlayer)LocalPlayer;
+        player.ToggleReady();
+        SendPlayerInfo();
+    }    
 
     #region IConnectionCallbacks implementation
 
@@ -280,14 +196,11 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
             {
                 CachedRoomList[info.Name] = info;
             }
-            // Add new room info to cache
             else
             {
                 CachedRoomList.Add(info.Name, info);
             }
         }
-
-        OnCachedRoomListUpdate();
     }
 
     public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
@@ -318,8 +231,8 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
     {
     }
 
-    #endregion
-
+    #endregion   
+    
     #region IMatchmakingCallbacks implementation
 
     public void OnFriendListUpdate(List<FriendInfo> friendList)
@@ -352,4 +265,94 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
     }
 
     #endregion
+
+    protected override Player CreatePlayer(string actorName, int actorNumber, bool isLocal, Hashtable actorProperties)
+    {
+        RealtimePlayer tmpPlayer = null;
+        if (this.CurrentRoom != null)
+        {
+            tmpPlayer = (RealtimePlayer)this.CurrentRoom.GetPlayer(actorNumber);
+        }
+
+        if (tmpPlayer == null)
+        {
+            tmpPlayer = new RealtimePlayer(actorName, actorNumber, isLocal);
+            tmpPlayer.InternalCacheProperties(actorProperties);
+
+            if (this.CurrentRoom != null)
+            {
+                this.CurrentRoom.StorePlayer(tmpPlayer);
+            }
+        }
+        else
+        {
+            this.DebugReturn(DebugLevel.ERROR, "Player already listed: " + actorNumber);
+        }
+
+        return tmpPlayer;
+    }
+
+    private void SendPosition()
+    {
+        // dont move if player does not have a number or peer is not connected
+        if (this.LocalPlayer == null || this.LocalPlayer.ActorNumber == 0)
+        {
+            return;
+        }
+
+        ((RealtimePlayer)this.LocalPlayer).SendPlayerLocation(this.LoadBalancingPeer);
+    }
+
+    private void SendPlayerInfo()
+    {
+        if (this.LocalPlayer == null || this.LocalPlayer.ActorNumber == 0)
+        {
+            return;
+        }
+
+        ((RealtimePlayer)this.LocalPlayer).SendPlayerInfo(this.LoadBalancingPeer);
+    }
+
+    private void UpdateLoop()
+    {
+        while (true)
+        {
+            this.Update();
+            Thread.Sleep(10);
+        }
+    }
+
+    private void Update()
+    {
+        if (Environment.TickCount - this.LastDispatch > this.DispatchInterval)
+        {
+            this.LastDispatch = Environment.TickCount;
+            this.LoadBalancingPeer.DispatchIncomingCommands();
+        }
+
+        if (Environment.TickCount - this.LastSend > this.SendInterval)
+        {
+            this.LastSend = Environment.TickCount;
+            this.LoadBalancingPeer.SendOutgoingCommands(); // will send pending, outgoing commands
+        }
+
+        if (this.MoveInterval != 0 && Environment.TickCount - this.LastMove > this.MoveInterval)
+        {
+            this.LastMove = Environment.TickCount;
+            if (this.State == ClientState.Joined)
+            {
+                this.SendPosition();
+            }
+        }
+
+        // Update call for windows phone UI-Thread
+        if (Environment.TickCount - this.LastUIUpdate > this.uiUpdateInterval)
+        {
+            this.LastUIUpdate = Environment.TickCount;
+            if (this.OnUpdate != null)
+            {
+                this.OnUpdate();
+            }
+        }
+    }
 }

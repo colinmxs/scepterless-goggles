@@ -1,7 +1,5 @@
 ﻿public class RealtimeClientStarter
 {
-    public RealtimeClient Client { get; set; }
-
     private static RealtimeClientStarter instance; 
 
     public RealtimeClientStarter()
@@ -11,13 +9,16 @@
 
     public static RealtimeClientStarter Instance
     {
-        get 
+        get
         {
             if (instance == null)
             {
                 instance = new RealtimeClientStarter();
             }
+
             return instance;
         }
     }
+
+    public RealtimeClient Client { get; set; }    
 }
