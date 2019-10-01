@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ConnectManager : MonoBehaviour
 {
     public UIController UIController;
+    public RealtimeInGamePlayer InGamePlayer;
     private RealtimeClient client;
     private Dictionary<string, RoomInfo> rooms;
     private bool redrawNeeded = false;
@@ -13,6 +16,8 @@ public class ConnectManager : MonoBehaviour
     private bool IsInRoom => client.InRoom;
 
     private bool ConnectPanelIsActive => UIController.ConnectPanel.activeSelf;
+
+    private bool StartCondition => client.CurrentRoom.Players.Values.All(p => ((RealtimePlayer)p).PlayerReady);
 
     public void LeaveRoom()
     {
@@ -22,35 +27,6 @@ public class ConnectManager : MonoBehaviour
     public void ReadyUp()
     {
         client.ToggleReady();
-    }
-
-    private void Awake()
-    {
-        client = RealtimeClientStarter.Instance.Client;
-        rooms = client.CachedRoomList;
-        client.OnUpdate += () => redrawNeeded = true;
-        UIController.CreateRoom += CreateRoom;
-        UIController.JoinRoom += JoinRoom;
-    }
-
-    private void CreateRoom()
-    {
-        var roomName = UIController.CreateRoomInput.text;
-        JoinRoom(roomName);
-    }
-
-    private void JoinRoom(string roomName)
-    {
-        var joined = RealtimeClientStarter.Instance.Client.OpJoinRoom(
-            new Photon.Realtime.EnterRoomParams
-            {
-                CreateIfNotExists = true,
-                RoomName = roomName,
-                RoomOptions = new Photon.Realtime.RoomOptions
-                {
-                    MaxPlayers = 4
-                }
-            });
     }
 
     private void Update()
@@ -70,7 +46,27 @@ public class ConnectManager : MonoBehaviour
                 UIController.AddRoomButton(room.Value.Name, room.Value.PlayerCount, room.Value.MaxPlayers);
             }
         }
+    }    
+
+    private void CreateRoom()
+    {
+        var roomName = UIController.CreateRoomInput.text;
+        JoinRoom(roomName);
     }
+
+    private void JoinRoom(string roomName)
+    {
+        var joined = RealtimeClientStarter.Instance.Client.OpJoinRoom(
+            new EnterRoomParams
+            {
+                CreateIfNotExists = true,
+                RoomName = roomName,
+                RoomOptions = new Photon.Realtime.RoomOptions
+                {
+                    MaxPlayers = 4
+                }
+            });
+    }    
 
     private string[] GetPlayerNames()
     {
@@ -86,5 +82,51 @@ public class ConnectManager : MonoBehaviour
             return name;
         });
         return playerNames.ToArray();
+    }
+    
+    private IEnumerator StartCountdown()
+    {
+        int timeLeft = 3;
+        while (true)
+        {
+            if (IsInRoom && StartCondition && timeLeft > 0)
+            {
+                UIController.SetPlayCountdownText("Play starting in " + timeLeft + " seconds...");
+                yield return new WaitForSeconds(1);
+                timeLeft--;
+            }
+            else if (IsInRoom && !StartCondition && timeLeft != 3)
+            {
+                UIController.SetPlayCountdownText("Ready up to play!");
+                yield return null;
+                timeLeft = 3;
+            }
+
+            if (IsInRoom && StartCondition && timeLeft == 0)
+            {
+                UIController.SetPlayCountdownText("Loading the game!");
+                var inGamePlayer = Instantiate(InGamePlayer);
+                inGamePlayer.player = (RealtimePlayer)client.LocalPlayer;                
+                inGamePlayer.client = client;
+                SceneManager.LoadScene("Game");
+                yield return null;
+            }
+
+            yield return null;
+        }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(StartCountdown());
+    }
+
+    private void Awake()
+    {
+        client = RealtimeClientStarter.Instance.Client;
+        rooms = client.CachedRoomList;
+        client.OnUpdate += () => redrawNeeded = true;
+        UIController.CreateRoom += CreateRoom;
+        UIController.JoinRoom += JoinRoom;
     }
 }

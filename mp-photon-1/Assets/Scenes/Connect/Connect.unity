@@ -550,6 +550,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIController: {fileID: 753387191}
+  InGamePlayer: {fileID: 8186100160306497923, guid: 558d135ebe2f8244d8c5942f48a5f2de,
+    type: 3}
 --- !u!4 &1524715627
 Transform:
   m_ObjectHideFlags: 0

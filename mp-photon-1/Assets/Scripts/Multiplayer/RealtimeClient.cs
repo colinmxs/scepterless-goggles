@@ -17,6 +17,18 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
     private readonly int uiUpdateInterval = 1000;
     private readonly Thread updateThread;
 
+    public Action<string> OnScore;
+
+    public enum EventCode : byte
+    {
+        Score = 14
+    }
+
+    public enum EventKey : byte
+    {
+        PlayerName = 12
+    }
+
     public RealtimeClient(bool createGameLoopThread) : base(ConnectionProtocol.Udp)
     {
         CachedRoomList = new Dictionary<string, RoomInfo>();
@@ -117,9 +129,14 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
 
                 break;
 
-            case EventCode.Join:
+            case Photon.Realtime.EventCode.Join:
 
                 ((RealtimePlayer)LocalPlayer).SendPlayerInfo(this.LoadBalancingPeer);
+                break;
+
+            case (byte)EventCode.Score:   
+                // LOL!
+                OnScore((string)((Hashtable)photonEvent.CustomData)[(byte)EventKey.PlayerName]);
                 break;
         }
 
@@ -290,6 +307,19 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
         }
 
         return tmpPlayer;
+    }
+
+    public void SendUpdateScore(string playerName)
+    {
+        if(LoadBalancingPeer == null)
+        {
+            return;
+        }
+
+        Hashtable eventContent = new Hashtable();
+        eventContent.Add((byte)EventKey.PlayerName, playerName);
+
+        LoadBalancingPeer.OpRaiseEvent((byte)EventCode.Score, eventContent, new RaiseEventOptions { Receivers = ReceiverGroup.All }, new SendOptions() { DeliveryMode = DeliveryMode.Reliable });
     }
 
     private void SendPosition()

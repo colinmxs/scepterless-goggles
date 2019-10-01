@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public float FallMultiplier;
     public float MoveSpeed;
     public float JumpStrength;
+    public RealtimeInGamePlayer RealtimePlayer;
     private float axisHorizontal;
     private float movement;
     private float smoothing;
@@ -13,7 +15,8 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private Rigidbody2D rb;
     private int jumpGraceTime;
-    private int jumpGraceCountdown;   
+    private int jumpGraceCountdown;
+    private Transform _transform;
 
     private void Start()
     {
@@ -23,6 +26,17 @@ public class PlayerController : MonoBehaviour
         jumpGraceTime = 5;
         rb = gameObject.GetComponent<Rigidbody2D>();
         tag = "Player";
+        _transform = gameObject.transform;
+        StartCoroutine(SendPosition());
+    }
+
+    private IEnumerator SendPosition()
+    {
+        while (true)
+        {
+            this.RealtimePlayer.SendPlayerLocation(_transform.position.x, _transform.position.y);
+            yield return new WaitForSeconds(.05f);
+        }
     }
 
     private void HandleMovement()

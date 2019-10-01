@@ -19,6 +19,7 @@ public class UIController : MonoBehaviour
 
     private Text playerNamesText;
     private Text roomNameText;
+    private Text playCountdownText;
 
     public IEnumerable<Button> RoomButtons => roomButtons;
 
@@ -85,6 +86,11 @@ public class UIController : MonoBehaviour
         }
     }
 
+    internal void SetPlayCountdownText(string text)
+    {
+        playCountdownText.text = text;
+    }
+
     private void Awake()
     {
         for (int i = 0; i < 20; i++)
@@ -100,6 +106,7 @@ public class UIController : MonoBehaviour
         var textChillens = RoomPanel.GetComponentsInChildren<Text>();
         playerNamesText = textChillens[1];
         roomNameText = textChillens[0];
+        playCountdownText = textChillens[2];
         CreateRoomButton.onClick.AddListener(CreateRoom);
     }
 }

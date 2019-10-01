@@ -63,8 +63,8 @@ public class RealtimePlayer : Player
         }
 
         Hashtable eventContent = new Hashtable();
-        eventContent.Add((byte)EventKey.PlayerPositionX, (byte)this.XPosition);
-        eventContent.Add((byte)EventKey.PlayerPositionY, (byte)this.YPosition);
+        eventContent.Add((byte)EventKey.PlayerPositionX, (float)this.XPosition);
+        eventContent.Add((byte)EventKey.PlayerPositionY, (float)this.YPosition);
 
         peer.OpRaiseEvent((byte)EventCode.PlayerMove, eventContent, new RaiseEventOptions { Receivers = ReceiverGroup.All }, new SendOptions() { DeliveryMode = DeliveryMode.UnreliableUnsequenced });
     }
@@ -77,8 +77,8 @@ public class RealtimePlayer : Player
 
     internal void SetPosition(Hashtable eventData)
     {
-        this.XPosition = (byte)eventData[(byte)EventKey.PlayerPositionX];
-        this.YPosition = (byte)eventData[(byte)EventKey.PlayerPositionY];
+        this.XPosition = (float)eventData[(byte)EventKey.PlayerPositionX];
+        this.YPosition = (float)eventData[(byte)EventKey.PlayerPositionY];
     }
 
     internal void ToggleReady()

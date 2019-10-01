@@ -232,13 +232,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f1a0d7f59be1624bb259358420195fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfBalls: 1000
-  SecondsBetweenBallSpawn: 0.01
+  NumberOfBalls: 3
+  SecondsBetweenBallSpawn: 0.5
   PlayerSpawnerPrefab: {fileID: 5192281929137337808, guid: 3c54f6d9ba9002c46bd29a82cbff5679,
     type: 3}
   BallSpawnerPrefab: {fileID: 7777221008925763503, guid: aa854d636c937f0498a358fd729bee71,
     type: 3}
   ScoreUIPrefab: {fileID: 4397605309087711316, guid: c3226b7fcb33ea94d815667628a6db89,
+    type: 3}
+  OpponentPrefab: {fileID: 5495394796803026059, guid: ea6d52d351f05e8438c7df8240b09507,
     type: 3}
 --- !u!4 &756519819
 Transform:

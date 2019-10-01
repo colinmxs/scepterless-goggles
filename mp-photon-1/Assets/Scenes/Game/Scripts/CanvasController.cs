@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,14 +9,16 @@ public class CanvasController : MonoBehaviour
     public GameObject MidScreenTextPrefab;
     public GameObject InputFieldPrefab;
     private readonly Dictionary<string, Text> scoreBoardEntries = new Dictionary<string, Text>();
+    private GameManager gameManager;
     private Canvas canvas;
     private Text midScreenText;
     private Font font;    
 
-    internal void UpdateScore(string playerName, int score)
+    internal IEnumerator UpdateScore(string playerName, int score)
     {
         var scoreBoardEntry = scoreBoardEntries[playerName];
         scoreBoardEntry.text = playerName + "'s Score: " + score;
+        yield return null;
     }
 
     internal void DisplayWinMessage(string playerName)
@@ -29,6 +33,13 @@ public class CanvasController : MonoBehaviour
         {
             AddPlayerToScoreBoard(playerName);
         }
+    }
+
+
+    internal void AwaitingOthers()
+    {
+        midScreenText.fontSize = 50;
+        midScreenText.text = "Awaiting other players...";
     }
 
     internal void PressAnyKeyToStart()
