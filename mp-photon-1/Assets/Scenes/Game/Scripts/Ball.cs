@@ -14,7 +14,6 @@ public class Ball : MonoBehaviour
         if (col.gameObject.tag == "Player")
         {
             gameObject.SetActive(false);
-            gameManager.UpdateScore(col.gameObject.name);
         }
     }
 }

@@ -17,11 +17,11 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
     private readonly int uiUpdateInterval = 1000;
     private readonly Thread updateThread;
 
-    public Action<string> OnScore;
+    public Action<string> OnClaimWin;
 
     public enum EventCode : byte
     {
-        Score = 14
+        ClaimWin = 14
     }
 
     public enum EventKey : byte
@@ -134,9 +134,9 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
                 ((RealtimePlayer)LocalPlayer).SendPlayerInfo(this.LoadBalancingPeer);
                 break;
 
-            case (byte)EventCode.Score:   
+            case (byte)EventCode.ClaimWin:   
                 // LOL!
-                OnScore((string)((Hashtable)photonEvent.CustomData)[(byte)EventKey.PlayerName]);
+                OnClaimWin((string)((Hashtable)photonEvent.CustomData)[(byte)EventKey.PlayerName]);
                 break;
         }
 
@@ -309,17 +309,19 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
         return tmpPlayer;
     }
 
-    public void SendUpdateScore(string playerName)
+    public void SendClaimWin()
     {
-        if(LoadBalancingPeer == null)
+        var player = (RealtimePlayer)LocalPlayer;
+        
+        if (LoadBalancingPeer == null)
         {
             return;
         }
 
         Hashtable eventContent = new Hashtable();
-        eventContent.Add((byte)EventKey.PlayerName, playerName);
+        eventContent.Add((byte)EventKey.PlayerName, player.NickName);
 
-        LoadBalancingPeer.OpRaiseEvent((byte)EventCode.Score, eventContent, new RaiseEventOptions { Receivers = ReceiverGroup.All }, new SendOptions() { DeliveryMode = DeliveryMode.Reliable });
+        LoadBalancingPeer.OpRaiseEvent((byte)EventCode.ClaimWin, eventContent, new RaiseEventOptions { Receivers = ReceiverGroup.All }, new SendOptions() { DeliveryMode = DeliveryMode.Reliable });
     }
 
     private void SendPosition()

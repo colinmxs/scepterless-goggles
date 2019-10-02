@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SendPosition()
     {
-        while (true)
+        while (this.RealtimePlayer != null)
         {
             this.RealtimePlayer.SendPlayerLocation(_transform.position.x, _transform.position.y);
             yield return new WaitForSeconds(.05f);
