@@ -55,5 +55,7 @@ public class BallSpawner : MonoBehaviour
             ballsSpawned = ballsSpawned + 1;
             yield return new WaitForSeconds(SecondsBetweenSpawn);
         }
+
+        Destroy(this);
     }
 }

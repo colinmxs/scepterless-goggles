@@ -55,7 +55,9 @@ public class ConnectManager : MonoBehaviour
     }
 
     private void JoinRoom(string roomName)
-    {
+    {       
+        if(UIController.PlayerNameInput.text.Length != 0) client.LocalPlayer.NickName = UIController.PlayerNameInput.text;
+
         var joined = RealtimeClientStarter.Instance.Client.OpJoinRoom(
             new EnterRoomParams
             {
@@ -63,7 +65,7 @@ public class ConnectManager : MonoBehaviour
                 RoomName = roomName,
                 RoomOptions = new Photon.Realtime.RoomOptions
                 {
-                    MaxPlayers = 4
+                    MaxPlayers = 8
                 }
             });
     }    
@@ -128,5 +130,6 @@ public class ConnectManager : MonoBehaviour
         client.OnUpdate += () => redrawNeeded = true;
         UIController.CreateRoom += CreateRoom;
         UIController.JoinRoom += JoinRoom;
+        UIController.PlayerNameInput.text = client.LocalPlayer.NickName;
     }
 }

@@ -132,6 +132,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoomPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 3970918654709444151, guid: 54f05dac65ec2204bafd20f3257bc17a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 893705399685986578, guid: 54f05dac65ec2204bafd20f3257bc17a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -454,6 +459,7 @@ MonoBehaviour:
   RoomButtonContent: {fileID: 282363847}
   CreateRoomButton: {fileID: 1749661556}
   CreateRoomInput: {fileID: 1814678581}
+  PlayerNameInput: {fileID: 4382299702723012890}
 --- !u!1 &790071872
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,7 +694,7 @@ PrefabInstance:
     - target: {fileID: 4382299702846783374, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702846783361, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
@@ -798,72 +804,84 @@ PrefabInstance:
     - target: {fileID: 4382299702464218253, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702464218253, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702464218253, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702464218253, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702466342609, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 595
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702506214647, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702506214647, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702423020845, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299702423020845, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299701759908136, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299701759908136, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299701534750420, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.32854927
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299701534750420, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4382299701534750420, guid: bf23abba97bcf6a4896c87c1125a1d71,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf23abba97bcf6a4896c87c1125a1d71, type: 3}
+--- !u!114 &4382299702723012890 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9176193368416652151, guid: bf23abba97bcf6a4896c87c1125a1d71,
+    type: 3}
+  m_PrefabInstance: {fileID: 4382299702723012889}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -28,7 +28,7 @@ public class CanvasController : MonoBehaviour
     internal void PressAnyKeyToStart()
     {
         midScreenText.fontSize = 50;
-        midScreenText.text = "Press Any Key To Start...";
+        midScreenText.text = "First player to reach the orange square wins! Press Any Key To Start...";
     }
 
     internal void Clear()

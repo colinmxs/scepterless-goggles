@@ -102,14 +102,17 @@ public class GameManager : MonoBehaviour
 
     private void EndGame(string winner)
     {
-        canvasController.DisplayWinMessage(winner != null ? winner : "Local Player");
-        if(!string.IsNullOrEmpty(LocalPlayer?.player?.NickName))
+        if (!shutdown)
         {
-            if(LocalPlayer.player.NickName == winner)
+            canvasController.DisplayWinMessage(winner);
+            if (LocalPlayer != null)
             {
-                LocalPlayer.client.SendClaimWin();
+                if (LocalPlayer.player.NickName == winner)
+                {
+                    LocalPlayer.client.SendClaimWin();
+                }
             }
-        }
-        shutdown = true;
+            shutdown = true;
+        }        
     }
 }

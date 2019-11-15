@@ -6,7 +6,7 @@ public class TargetController : MonoBehaviour
     public float maxX;
     public float minX;
     public float speed;
-    internal bool dirRight = true;
+    internal bool dirRight = false;
     internal UnityEvent TargetNailed = new UnityEvent();
 
     private void Update()

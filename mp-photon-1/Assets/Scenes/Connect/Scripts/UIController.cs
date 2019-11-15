@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
     public GameObject RoomButtonContent;
     public Button CreateRoomButton;
     public InputField CreateRoomInput;
+    public InputField PlayerNameInput;
     public UnityAction CreateRoom;
     public UnityAction<string> JoinRoom;
 
