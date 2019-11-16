@@ -9,7 +9,7 @@ public class RealtimeClient : LoadBalancingClient, IConnectionCallbacks, ILobbyC
 {
     internal int DispatchInterval = 10;                 
     internal int LastDispatch = Environment.TickCount;
-    internal int SendInterval = 50;                     
+    internal int SendInterval = 20;                     
     internal int LastSend = Environment.TickCount;
     internal int MoveInterval = 0;                    
     internal int LastMove = Environment.TickCount;

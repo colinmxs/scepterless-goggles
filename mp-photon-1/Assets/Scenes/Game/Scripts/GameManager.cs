@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,7 +17,6 @@ public class GameManager : MonoBehaviour
     private TargetController target;
     private bool shutdown = false;
     private int numberOfPlayers = 1;
-    private readonly List<OpponentController> OpponentBalls = new List<OpponentController>();
 
     private void Awake()
     {
@@ -76,7 +77,7 @@ public class GameManager : MonoBehaviour
                     opponent.transform.SetParent(opponentParent.transform);
                     opponent.player = (RealtimePlayer)player;
                     opponent.name = player.NickName;
-                    OpponentBalls.Add(opponent);
+                    canvasController.AddHoverCanvas(opponent.name, opponent.transform);
                 }
             }
         }
@@ -85,6 +86,14 @@ public class GameManager : MonoBehaviour
 
         Run();
     }
+
+    private IEnumerator BackToMenu()
+    {
+        yield return new WaitForSeconds(2.0f);
+        LocalPlayer.client.ToggleReady();
+        SceneManager.LoadScene("Connect");
+    }
+
 
     private void Run()
     {
@@ -113,6 +122,7 @@ public class GameManager : MonoBehaviour
                 }
             }
             shutdown = true;
+            StartCoroutine(BackToMenu());
         }        
     }
 }

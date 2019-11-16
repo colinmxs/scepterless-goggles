@@ -7,12 +7,29 @@ using UnityEngine.UI;
 public class CanvasController : MonoBehaviour
 {
     public GameObject MidScreenTextPrefab;
-    public GameObject InputFieldPrefab;
-    private readonly Dictionary<string, Text> scoreBoardEntries = new Dictionary<string, Text>();
-    private Canvas canvas;
+    private Canvas midScreenTextCanvas;
+    private GameObject hoverCanvasParent;
     private Text midScreenText;
     private Font font;
     private string displayWinMessage = null;
+
+    internal void AddHoverCanvas(string text, Transform hoverTransform)
+    {
+        var hoverGameObject = new GameObject();
+        hoverGameObject.name = "Hover " + text;
+        hoverGameObject.transform.SetParent(this.hoverCanvasParent.transform);
+        var hoverCanvas = hoverGameObject.AddComponent<Canvas>();
+        //hoverCanvas.renderMode = RenderMode.WorldSpace;
+        var textObject = new GameObject();
+        var textComponent = textObject.AddComponent<Text>();
+        textObject.transform.SetParent(hoverGameObject.transform);
+        textObject.name = "Text";
+        textComponent.text = text;
+        textComponent.font = this.font;
+        textComponent.alignment = TextAnchor.UpperCenter;
+        var hoverFollow = hoverGameObject.AddComponent<HoverFollow>();        
+        hoverFollow.target = hoverTransform.transform;
+    }
 
     internal void DisplayWinMessage(string playerName)
     {
@@ -33,7 +50,7 @@ public class CanvasController : MonoBehaviour
 
     internal void Clear()
     {
-        var childs = GetComponentsInChildren<Text>();
+        var childs = midScreenTextCanvas.gameObject.GetComponentsInChildren<Text>();
         foreach (var text in childs)
         {
             text.text = string.Empty;
@@ -54,21 +71,26 @@ public class CanvasController : MonoBehaviour
 
     private void Awake()
     {
-        // Canvas
         var myGO = new GameObject();
         myGO.name = "Canvas";
         myGO.AddComponent<Canvas>();
         myGO.transform.SetParent(this.transform);
 
-        canvas = myGO.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        midScreenTextCanvas = myGO.GetComponent<Canvas>();
+        midScreenTextCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         myGO.AddComponent<CanvasScaler>();
         myGO.AddComponent<GraphicRaycaster>();
 
         font = Font.CreateDynamicFontFromOSFont("Arial", 100);
 
-        var midScreenTextParent = Instantiate(MidScreenTextPrefab, canvas.transform);
+        var midScreenTextParent = Instantiate(MidScreenTextPrefab, midScreenTextCanvas.transform);
         midScreenTextParent.name = "Mid Screen Text";
         midScreenText = midScreenTextParent.GetComponent<Text>();
+
+        this.hoverCanvasParent = new GameObject();
+        hoverCanvasParent.transform.SetParent(this.transform);
+        hoverCanvasParent.name = "Hover Canvas";
+        var canvasComponent = hoverCanvasParent.AddComponent<Canvas>();
+        canvasComponent.renderMode = RenderMode.ScreenSpaceOverlay;
     }
 }
